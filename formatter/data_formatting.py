@@ -1,5 +1,6 @@
 import json
 import os
+from extractor.metadata_extractor import metadata
 
 
 def to_json(dic, file_name="metadata.json"):
@@ -24,3 +25,14 @@ def get_arbo(location):
         paths.append(path)
 
     return paths
+
+
+def luke_oswalker(path):
+    paths = get_arbo(path)
+    for path in paths:
+        filename = os.path.basename(path)
+        print(filename)
+        author = metadata(path)
+        print(author)
+
+    return(author)

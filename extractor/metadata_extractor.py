@@ -1,6 +1,5 @@
 import zipfile
 import lxml.etree
-
 try:
     from xml.etree.cElementTree import XML
 except ImportError:
