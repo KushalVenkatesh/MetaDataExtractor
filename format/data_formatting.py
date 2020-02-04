@@ -1,6 +1,6 @@
 import json
 import os
-from extractor.metadata_extractor import metadata
+from extractor.metadata_extractor import metadata2
 
 
 def to_json(dic, file_name="metadata.json"):
@@ -31,8 +31,8 @@ def luke_oswalker(path):
     paths = get_arbo(path)
     for path in paths:
         filename = os.path.basename(path)
-        print(filename)
-        author = metadata(path)
-        print(author)
-
-    return(author)
+        if filename.endswith(".pptx") or filename.endswith(".docx") or filename.endswith(".xlsx"):
+            print("------------------")
+            print(filename)
+            author = metadata2(path, filename)
+            print(author)
