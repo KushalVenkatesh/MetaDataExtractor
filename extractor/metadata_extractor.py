@@ -1,30 +1,12 @@
 from __future__ import print_function
-import argparse
-import lxml.etree
+from lxml import etree
 import zipfile
 from datetime import datetime as dt
 from xml.etree import ElementTree as etree
 
-
-def metadata(path):
-    document = zipfile.ZipFile(path)
-
-    # use lxml to parse the xml file we are interested in
-    doc = lxml.etree.fromstring(document.read('docProps/core.xml'))
-
-    # retrieve creator
-    ns = {'dc': 'http://purl.org/dc/elements/1.1/'}
-    creator = doc.xpath('//dc:creator', namespaces=ns)[0].text
-
-    return creator
-
-
-def metadata2(path, filename):
-    parser = argparse.ArgumentParser('Office Document Metadata')
-    parser.add_argument(str(filename), help=str(path))
-    args = parser.parse_args()
-    if zipfile.is_zipfile(args.Office_File):
-        zfile = zipfile.ZipFile(args.Office_File)
+def metadata(path, filename=None):
+    if zipfile.is_zipfile(path):
+        zfile = zipfile.ZipFile(path)
         core_xml = etree.fromstring(zfile.read('docProps/core.xml'))
         app_xml = etree.fromstring(zfile.read('docProps/app.xml'))
 

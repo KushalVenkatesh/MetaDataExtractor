@@ -1,7 +1,3 @@
-# Created by .ignore support plugin (hsz.mobi)
-### Example user template template
-### Example user template
-
 # IntelliJ project files
 data/data
 .idea
@@ -9,3 +5,4 @@ data/data
 out
 gen
 venv/
+*.ipynb
