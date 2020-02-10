@@ -1,8 +1,9 @@
 import json
 import os
-from extractor.metadata_extractor import metadata
 import xml
 import re
+from extractor.metadata_extractor import metadata
+from datetime import datetime
 
 
 def xml_printer(zip_file, xml_toread):
@@ -14,8 +15,16 @@ def xml_printer(zip_file, xml_toread):
     print(pretty_xml)
 
 
+class DateTimeEncoder(json.JSONEncoder):
+    def default(self, o):
+        if isinstance(o, datetime):
+            return o.isoformat()
+
+        return json.JSONEncoder.default(self, o)
+
+
 def to_json(dic, file_name="metadata.json"):
-    js = json.dumps(dic, indent=1)
+    js = json.dumps(dic, indent=1, cls=DateTimeEncoder)
 
     # Open new json file if not exist it will create
     fp = open(os.getcwd() + '/data/data/' + str(file_name), 'w')
@@ -38,12 +47,21 @@ def get_arbo(location):
     return paths
 
 
-def luke_oswalker(path):
+def luke_oswalker(path, save=False):
+    files = {}
+    index = 1
     paths = get_arbo(path)
     for path in paths:
         filename = os.path.basename(path)
         if filename.endswith(".pptx") or filename.endswith(".docx") or filename.endswith(".xlsx"):
-            print("------------------")
-            print(filename)
-            author = metadata(path, filename)
-            print(author)
+            try:
+                print("------------------")
+                print(filename)
+                files[str(index)] = metadata(path, filename)
+                index += 1
+                print(files)
+            except Exception as e:
+                print(e)
+    print(files)
+    if save:
+        to_json(files)
