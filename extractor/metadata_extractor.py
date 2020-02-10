@@ -1,7 +1,7 @@
 from __future__ import print_function
-import zipfile
-import os
 from lxml import etree
+import os
+import zipfile
 from datetime import datetime as dt
 from xml.etree import ElementTree as etree
 

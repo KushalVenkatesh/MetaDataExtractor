@@ -2,8 +2,21 @@ import json
 import os
 import xml
 import re
+import pandas as pd
 from extractor.metadata_extractor import metadata
 from datetime import datetime
+
+
+def df_from_json(path):
+
+    js_metadata = pd.read_json(path)
+    df_metadata = pd.DataFrame({'Title':js_metadata.iloc[0,],
+                                'Author(s)':js_metadata.iloc[1,],
+                                'Created Date':js_metadata.iloc[2,],
+                                'Modified Date':js_metadata.iloc[3,],
+                                'Last Modified By': js_metadata.iloc[4,]})
+
+    return df_metadata
 
 
 def xml_printer(zip_file, xml_toread):
@@ -47,7 +60,8 @@ def get_arbo(location):
     return paths
 
 
-def luke_oswalker(path, save=False):
+def luke_oswalker(path, save=False, R=False):
+    global df
     files = {}
     index = 1
     paths = get_arbo(path)
@@ -57,11 +71,16 @@ def luke_oswalker(path, save=False):
             try:
                 print("------------------")
                 print(filename)
-                files[str(index)] = metadata(path, filename)
+                temp = metadata(path, filename)
+                print(temp)
+                files[str(index)] = temp
                 index += 1
-                print(files)
             except Exception as e:
                 print(e)
-    print(files)
+
     if save:
         to_json(files)
+        if R:
+            path = os.getcwd() + '/data/data/' + "metadata.json"
+            df = df_from_json(path)
+            df.to_csv('metadata.csv')
