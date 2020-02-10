@@ -1,6 +1,7 @@
 from __future__ import print_function
-from lxml import etree
 import zipfile
+import os
+from lxml import etree
 from datetime import datetime as dt
 from xml.etree import ElementTree as etree
 
@@ -9,6 +10,9 @@ def metadata(path, filename=None):
         zfile = zipfile.ZipFile(path)
         core_xml = etree.fromstring(zfile.read('docProps/core.xml'))
         app_xml = etree.fromstring(zfile.read('docProps/app.xml'))
+        metadata = {}
+        metadata['Title'] = os.path.basename(path)
+        valid_name = ['Author(s)','Created Date','Modified Date','Last Modified By']
 
         # Key elements
         core_mapping = {
@@ -32,6 +36,8 @@ def metadata(path, filename=None):
                     else:
                         text = element.text
                     print("{}: {}".format(title, text))
+                    if title in valid_name:
+                        metadata[str(title)] = text
 
         # Statistical information
         app_mapping = {
@@ -55,3 +61,7 @@ def metadata(path, filename=None):
                     else:
                         text = element.text
                     print("{}: {}".format(title, text))
+                    if title in valid_name:
+                        metadata[str(title)] = text
+
+    return metadata
