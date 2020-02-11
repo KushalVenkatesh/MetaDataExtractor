@@ -7,18 +7,6 @@ from extractor.metadata_extractor import msoffice_metadata, pdf_metadata
 from datetime import datetime
 
 
-def df_from_json(path):
-
-    js_metadata = pd.read_json(path)
-    df_metadata = pd.DataFrame({'Title':js_metadata.iloc[0,],
-                                'Author(s)':js_metadata.iloc[1,],
-                                'Created Date':js_metadata.iloc[2,],
-                                'Modified Date':js_metadata.iloc[3,],
-                                'Last Modified By': js_metadata.iloc[4,]})
-
-    return df_metadata
-
-
 def xml_printer(zip_file, xml_toread):
     xml_raw = zip_file.read(str(xml_toread))
     ugly_xml = xml.dom.minidom.parseString(xml_raw).toprettyxml(indent='   ')
@@ -92,5 +80,6 @@ def luke_oswalker(path, save=False, R=False):
         to_json(files)
         if R:
             path = os.getcwd() + '/data/data/' + "metadata.json"
-            df = df_from_json(path)
+            temp = pd.read_json(path)
+            df = temp.T
             df.to_csv('metadata.csv')
