@@ -3,7 +3,7 @@ import os
 import xml
 import re
 import pandas as pd
-from extractor.metadata_extractor import metadata
+from extractor.metadata_extractor import msoffice_metadata, pdf_metadata
 from datetime import datetime
 
 
@@ -71,7 +71,17 @@ def luke_oswalker(path, save=False, R=False):
             try:
                 print("------------------")
                 print(filename)
-                temp = metadata(path, filename)
+                temp = msoffice_metadata(path, filename)
+                print(temp)
+                files[str(index)] = temp
+                index += 1
+            except Exception as e:
+                print(e)
+        if filename.endswith('.pdf'):
+            try:
+                print("------------------")
+                print(filename)
+                temp = pdf_metadata(path)
                 print(temp)
                 files[str(index)] = temp
                 index += 1
