@@ -53,6 +53,7 @@ def luke_oswalker(path, save=False, R=False):
     files = {}
     index = 1
     paths = get_arbo(path)
+    exception_handling = {}
     for path in paths:
         filename = os.path.basename(path)
         if filename.endswith(".pptx") or filename.endswith(".docx") or filename.endswith(".xlsx"):
@@ -65,6 +66,8 @@ def luke_oswalker(path, save=False, R=False):
                 index += 1
             except Exception as e:
                 print(e)
+                exception_handling[str(filename)] = str(e)
+
         if filename.endswith('.pdf'):
             try:
                 print("------------------")
@@ -75,9 +78,11 @@ def luke_oswalker(path, save=False, R=False):
                 index += 1
             except Exception as e:
                 print(e)
+                exception_handling[str(filename)] = str(e)
 
     if save:
         to_json(files)
+        to_json(exception_handling, file_name="errors.json")
         if R:
             path = os.getcwd() + '/data/data/' + "metadata.json"
             temp = pd.read_json(path)

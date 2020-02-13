@@ -1,4 +1,5 @@
 from __future__ import print_function
+from PIL import Image, ExifTags
 from lxml import etree
 from pdfminer.pdfparser import PDFParser
 from pdfminer.pdfdocument import PDFDocument
@@ -7,7 +8,8 @@ import zipfile
 from datetime import datetime as dt
 from xml.etree import ElementTree as etree
 import re
-
+from hachoir.metadata import extractMetadata
+from hachoir.parser import createParser
 
 def posix_from_s(element):
     year = element[2:6]
@@ -126,3 +128,19 @@ def pdf_metadata(path):
         metadata['Modified Date'] = None
 
     return metadata
+
+def img_metadata(path):
+    infoDict = {}  # Creating the dict to get the metadata tags
+    exifToolPath = 'D:/ExifTool/exifTool.exe'  # for Windows user have to specify the Exif tool exe path for metadata extraction.
+    # For mac and linux user it is just
+    """exifToolPath = exiftool"""
+
+
+
+    process = subprocess.Popen(path, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+                           universal_newlines=True)
+    for tag in process.stdout:
+        line = tag.strip().split(':')
+        infoDict[line[0].strip()] = line[-1].strip()
+
+    return infoDict
