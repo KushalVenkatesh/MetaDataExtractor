@@ -1,5 +1,6 @@
 from __future__ import print_function
 from PIL import Image, ExifTags
+import subprocess
 from lxml import etree
 from pdfminer.pdfparser import PDFParser
 from pdfminer.pdfdocument import PDFDocument
@@ -35,6 +36,7 @@ def decoder(element):
         decoded = re.sub('\x00', "", decoded)
         decoded = re.sub('0xfe', "", decoded)
         decoded = re.sub('þÿ', "", decoded)
+
     return decoded
 
 
@@ -112,14 +114,23 @@ def pdf_metadata(path):
     try:
         metadata['Author(s)'] = decoder(doc.info[0]["Author"])
     except KeyError:
-        metadata['Author(s)'] = decoder(doc.info[0]["Creator"])
+        try:
+            metadata['Author(s)'] = decoder(doc.info[0]["Creator"])
+        except KeyError:
+            metadata['Author(s)'] = "Unknown"
+
     try:
         metadata['Last Modified By'] = decoder(doc.info[0]["Author"])
     except Exception as e:
         print(e)
         print('No modification found in metadata')
         metadata['Last Modified By'] = None
-    metadata['Created Date'] = posix_from_s(decoder(doc.info[0]["CreationDate"]))
+    try:
+        metadata['Created Date'] = posix_from_s(decoder(doc.info[0]["CreationDate"]))
+    except Exception as e:
+        print(e)
+        print('No creation date found in metadata')
+        metadata['Created Date'] = None
     try:
         metadata['Modified Date'] = posix_from_s(decoder(doc.info[0]["ModDate"]))
     except Exception as e:
@@ -129,16 +140,10 @@ def pdf_metadata(path):
 
     return metadata
 
+
 def img_metadata(path):
     infoDict = {}  # Creating the dict to get the metadata tags
-    exifToolPath = 'D:/ExifTool/exifTool.exe'  # for Windows user have to specify the Exif tool exe path for metadata extraction.
-    # For mac and linux user it is just
-    """exifToolPath = exiftool"""
-
-
-
-    process = subprocess.Popen(path, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
-                           universal_newlines=True)
+    process = subprocess.Popen(path, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True)
     for tag in process.stdout:
         line = tag.strip().split(':')
         infoDict[line[0].strip()] = line[-1].strip()
