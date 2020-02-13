@@ -34,11 +34,11 @@ def decoder(element):
         decoded = element.decode("latin-1")
         decoded = re.sub('\x00', "", decoded)
         decoded = re.sub('0xfe', "", decoded)
-
+        decoded = re.sub('þÿ', "", decoded)
     return decoded
 
 
-def msoffice_metadata(path, filename=None):
+def msoffice_metadata(path):
     if zipfile.is_zipfile(path):
         zfile = zipfile.ZipFile(path)
         core_xml = etree.fromstring(zfile.read('docProps/core.xml'))

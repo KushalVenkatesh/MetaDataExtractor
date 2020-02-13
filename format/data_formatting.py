@@ -60,7 +60,7 @@ def luke_oswalker(path, save=False, R=False):
             try:
                 print("------------------")
                 print(filename)
-                temp = msoffice_metadata(path, filename)
+                temp = msoffice_metadata(path)
                 print(temp)
                 files[str(index)] = temp
                 index += 1
