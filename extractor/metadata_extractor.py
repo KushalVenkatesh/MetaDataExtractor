@@ -2,6 +2,7 @@ from __future__ import print_function
 from PIL import Image, ExifTags
 import subprocess
 from lxml import etree
+from pdfminer.pdftypes import resolve1
 from pdfminer.pdfparser import PDFParser
 from pdfminer.pdfdocument import PDFDocument
 import os
@@ -109,34 +110,59 @@ def pdf_metadata(path):
     doc = PDFDocument(parser)
     try:
         metadata['Title'] = decoder(doc.info[0]["Title"])
+    except AttributeError:
+        title = decoder(resolve1(doc.info[0]["Title"]))
+        if title:
+            metadata['Title'] = title
+        else:
+            metadata['Title'] = os.path.basename(path)
     except KeyError:
         metadata['Title'] = os.path.basename(path)
+
     try:
         metadata['Author(s)'] = decoder(doc.info[0]["Author"])
+    except AttributeError:
+        author = decoder(resolve1(doc.info[0]["Author"]))
+        if author:
+            metadata["Author"] = author
+        else:
+            metadata['Author'] = "Unknown"
     except KeyError:
-        try:
-            metadata['Author(s)'] = decoder(doc.info[0]["Creator"])
-        except KeyError:
-            metadata['Author(s)'] = "Unknown"
+        metadata["Author"] = "Unknown"
 
     try:
         metadata['Last Modified By'] = decoder(doc.info[0]["Author"])
-    except Exception as e:
-        print(e)
-        print('No modification found in metadata')
-        metadata['Last Modified By'] = None
+    except AttributeError:
+        author = decoder(resolve1(doc.info[0]["Author"]))
+        if author:
+            metadata['Last Modified By'] = author
+        else:
+            metadata['Last Modified By'] = "Unknown"
+    except KeyError:
+        metadata['Last Modified By'] = "Unknown"
+
     try:
         metadata['Created Date'] = posix_from_s(decoder(doc.info[0]["CreationDate"]))
-    except Exception as e:
-        print(e)
-        print('No creation date found in metadata')
-        metadata['Created Date'] = None
+    except AttributeError:
+        cdate = posix_from_s(decoder(resolve1(doc.info[0]["CreationDate"])))
+        if cdate:
+            metadata['Created Date'] = cdate
+        else:
+            metadata['Created Date'] = "Unknown"
+    except KeyError:
+        metadata['Created Date'] = "Unknown"
+
     try:
         metadata['Modified Date'] = posix_from_s(decoder(doc.info[0]["ModDate"]))
-    except Exception as e:
-        print(e)
-        print('No modification found in metadata')
-        metadata['Modified Date'] = None
+    except AttributeError:
+        mdate = posix_from_s(decoder(resolve1(doc.info[0]["ModDate"])))
+        if mdate:
+            metadata['Modified Date'] = mdate
+        else:
+            metadata['Modified Date'] = "Unknown"
+    except KeyError:
+        metadata['Modified Date'] = "Unknown"
+
 
     return metadata
 
