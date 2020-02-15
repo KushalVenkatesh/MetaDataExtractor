@@ -48,7 +48,7 @@ def get_arbo(location):
     return paths
 
 
-def luke_oswalker(path, save=False, R=False):
+def luke_oswalker(path, save=False):
     global df
     files = {}
     index = 1
@@ -83,8 +83,3 @@ def luke_oswalker(path, save=False, R=False):
     if save:
         to_json(files)
         to_json(exception_handling, file_name="errors.json")
-        if R:
-            path = os.getcwd() + '/data/data/' + "metadata.json"
-            temp = pd.read_json(path)
-            df = temp.T
-            df.to_csv('metadata.csv')
