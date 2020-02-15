@@ -124,11 +124,11 @@ def pdf_metadata(path):
     except AttributeError:
         author = decoder(resolve1(doc.info[0]["Author"]))
         if author:
-            metadata["Author"] = author
+            metadata["Author(s)"] = author
         else:
-            metadata['Author'] = "Unknown"
+            metadata['Author(s)'] = "Unknown"
     except KeyError:
-        metadata["Author"] = "Unknown"
+        metadata["Author(s)"] = "Unknown"
 
     try:
         metadata['Last Modified By'] = decoder(doc.info[0]["Author"])
