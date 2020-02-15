@@ -7,13 +7,19 @@ library(shinythemes)
 library(ggplot2)
 
 ur_path <- glue::glue(getwd(), "/data/metadata.csv")
-don <- read_csv(ur_path)%>% 
+don <- read_csv(ur_path, col_types = list(col_double(), 
+                                          col_character(), 
+                                          col_datetime(), 
+                                          col_character(), 
+                                          col_datetime(), 
+                                          col_character())) %>% 
   select(-X1) %>% 
   rename(authors = `Author(s)`,
          created_date = `Created Date`,
          last_mod_by = `Last Modified By`,
          modified_date = `Modified Date`,
-         title = Title) 
+         title = Title) %>% 
+  na.omit()
 
 cre <- don %>% 
   select(title, created_date, authors) %>% 
