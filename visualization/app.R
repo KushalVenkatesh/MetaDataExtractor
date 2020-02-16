@@ -135,7 +135,7 @@ server <- function(input, output) {
                 aes_string(y = as.factor(file_data_viz()$title),
                            x = file_data_viz()$date,
                            color = as.factor(file_data_viz()$author),
-                           group = as.factor(file_data_viz()$title),
+                           #group = as.factor(file_data_viz()$title),
                            size=2,
                            alpha = 0.6)) +
       geom_point() +
@@ -168,7 +168,7 @@ server <- function(input, output) {
                 aes_string(y = as.factor(people_data_viz()$title),
                            x = people_data_viz()$date,
                            color = as.factor(people_data_viz()$author),
-                           group = as.factor(people_data_viz()$title),
+                           #group = as.factor(people_data_viz()$title),
                            size=2,
                            alpha = 0.6)) +
       geom_point() +
